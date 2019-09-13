@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+<header><title>Word Twist!</title></header>    
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js"></script>
+<body id="body1">
+    <header>Welcome to my Wordtwist!</header>
+
+    Please Enter your Name: <input type="text" id="name">
+    <p></p>
+
+    <button onclick="randomRackGenerator()">
+            Random Rack
+    </button>
+
+    <h2 id = "Rack">...</h2>
+
+ 
+    <p></p>
+    <button onclick="checkRack()">Check</button>
+
+    Please Enter your guess: <input type="text" id="guess">
+    <p></p>
+    
+    <h3>Correct Guesses</h3>
+    <h2 id = "correct"></h2>
+    
+
+    <ul id="bingos">
+    
+
+    <script>
+        var rackSize = 0;
+        var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        var charactersLength = characters.length;
+        var result = new Array(7);
+        var resultString = "";
+        var wordList = new Array();
+        var correctGuessList = new Array();
+
+        var randomRackGenerator = function (evt){
+            
+            for ( var i = 0; i < 7; i++ ) {
+                result[i] = characters.charAt(Math.floor(Math.random() * charactersLength));
+            }
+            console.log(JSON.stringify(result));
+            result.sort();
+            console.log(JSON.stringify(result));
+        
+            resultString =result.join('');
+            console.log(resultString);
+            //resultString = resultString.substring(0, resultString.length).replace(",","")
+            console.log(resultString);
+            document.getElementById("Rack").innerText = result;
+
+            $.ajax({
+                    method: "GET",
+                    url: "api.php",
+                    data: { "receiver":resultString},
+                    success: data=>{ wordList = data}
+            });
+            
+        }
+
+        var checkRack = function (evt){
+            var fee = document.getElementById("guess").value;
+            console.log(fee);
+            console.log(wordList);
+            if(wordList.includes(fee,0) && correctGuessList.includes(fee,0) == 0){
+                correctGuessList.push(fee);
+                document.getElementById("correct").innerText = correctGuessList;
+            }
+            
+        }
+
+    </script>
+
+</body>
+</html>
